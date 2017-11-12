@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="62dp"
+    android:orientation="horizontal"
+    android:background="@drawable/border_radio"
+    >
+    <ImageView
+        android:id="@+id/item_pic"
+        android:src="@drawable/contect08a"
+        android:layout_width="60dp"
+        android:layout_gravity="center"
+        android:layout_height="60dp"
+        android:layout_marginLeft="20dp"
+
+        />
+    <TextView
+        android:layout_weight="1"
+        android:id="@+id/item_name"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_marginLeft="5dp"
+        android:textSize="26sp"
+        android:textColor="#f46c9a"
+        android:layout_gravity="center"
+        android:text="康泰血压计"
+        android:gravity="center"/>
+    <ImageView
+        android:id="@+id/connect_pic"
+        android:layout_width="20dp"
+        android:layout_height="28dp"
+        android:layout_gravity="center"
+        android:src="@drawable/sync"
+        android:layout_marginRight="0dp"
+        />
+    <TextView
+        android:id="@+id/connect_msg"
+        android:layout_below="@+id/connect_pic"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:text="同步"
+        android:layout_marginRight="15dp"
+        android:textColor="#f46c9a"/>
+    <TextView
+        android:layout_weight="1"
+        android:id="@+id/item_address"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_marginLeft="5dp"
+        android:textSize="14sp"
+        android:textColor="#f46c9a"
+        android:visibility="gone"
+        android:text="哈哈哈我是地址"
+        android:gravity="center"/>
+
+    <TextView
+        android:id="@+id/devicetype"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:visibility="gone"
+        android:text="TextView" />
+</LinearLayout>
