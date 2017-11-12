@@ -1,4 +1,8 @@
 package com.ruiqi.mtm;
+import android.Manifest;
+import android.app.Activity;
+import android.content.pm.PackageManager;
+import android.support.v4.app.ActivityCompat;
 import android.view.Gravity;
 import android.view.ViewGroup;
 
@@ -54,6 +58,7 @@ public class MainActivity extends AppCompatActivity implements
     private Handler mHandler;
     private MtBuf m_mtbuf = new MtBuf();
     private BgBuf m_bgbuf=new BgBuf();
+    private BpmBuf m_bpmbuf=new BpmBuf(); //心电 达理
     private static  boolean isExit=false;
 
     private Bundle params;
@@ -66,6 +71,10 @@ public class MainActivity extends AppCompatActivity implements
     public static  String devicename;
     public static  String devicetype;
     public static  int deviceimg;
+    private static final int REQUEST_EXTERNAL_STORAGE = 1; //权限申请 达理
+    private static String[] PERMISSIONS_STORAGE = {
+            "android.permission.READ_EXTERNAL_STORAGE",
+            "android.permission.WRITE_EXTERNAL_STORAGE" };
     //退出
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event){
@@ -96,6 +105,8 @@ public class MainActivity extends AppCompatActivity implements
         dataList=new ArrayList<HashMap<String, Object>>();
         params=this.getIntent().getExtras();
         init();
+        verifyStoragePermissions(this); //申请权限 达理
+
 /*
         BloodData data = new BloodData();
         data.setTime("2017-12-16 17:17:17");;
@@ -186,7 +197,8 @@ public class MainActivity extends AppCompatActivity implements
         lsvDevices.setAdapter(dev_adapter);
         m_mtbuf.setMyHandler(myHandle);
         m_bgbuf.setMyHandler(myHandle);
-        call = new CallBack(m_mtbuf, this,m_bgbuf);
+        m_bpmbuf.setMyHandler(myHandle); //达理
+        call = new CallBack(m_mtbuf, this,m_bgbuf,m_bpmbuf); //达理
         bluetoothService = new BluetoothService(context, call, myHandle);
         mHandler = new Handler();
         //数据列表的点击事件
@@ -318,7 +330,8 @@ public class MainActivity extends AppCompatActivity implements
                     break;
                 case BluetoothService.STATE_SEND:
                     // 上传数据
-                    bluetoothService.connectCancel();
+                    //bluetoothService.connectCancel();   //达理  心电计是先发送数据然后获取波形图这里断开蓝牙连接就不能获取蓝牙数据了
+
                     BloodData data = (BloodData) msg.obj;
                     if (data != null) {
                         Log.v("sendata",data.toString());
@@ -341,6 +354,10 @@ public class MainActivity extends AppCompatActivity implements
                     //Toast.makeText(context, "连接设备失败请稍后重试...", Toast.LENGTH_SHORT).show();
                     showTip("连接设备失败请稍后重试...");
                     break;
+                case BluetoothService.STATE_BROKEN:
+                    bluetoothService.connectCancel();
+                    showTip("心电计波形图数据数据接收完成,释放连接成功");
+                    break;
             }
         }
     };
@@ -360,9 +377,9 @@ public class MainActivity extends AppCompatActivity implements
     /**
      * 上传数据
      * @param //sid  门店编码
-     * @param time 采集时间，时间格式：2017-03-01 17:17:21
-     * @param sys 收缩压（高压）
-     * @param dia 舒张压（低压）
+     * @param //time 采集时间，时间格式：2017-03-01 17:17:21
+     * @param //sys 收缩压（高压）
+     * @param //dia 舒张压（低压）
      */
     private void sendData( BloodData data ,boolean put) {
         String serverURL = getResources().getString(R.string.server_url)+"/api/bloodpressure"; // 上传服务器
@@ -560,6 +577,19 @@ public class MainActivity extends AppCompatActivity implements
                 }
             }
             return view;
+        }
+    }
+    //权限申请 达理
+    public static void verifyStoragePermissions(Activity activity) {
+        // Check if we have write permission
+        int permission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        if (permission != PackageManager.PERMISSION_GRANTED) {
+            // We don't have permission so prompt the user
+            ActivityCompat.requestPermissions(
+                    activity,
+                    PERMISSIONS_STORAGE,
+                    REQUEST_EXTERNAL_STORAGE
+            );
         }
     }
 }

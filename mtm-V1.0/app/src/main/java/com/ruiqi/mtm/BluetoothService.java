@@ -39,6 +39,7 @@ public class BluetoothService {
     public static final int STATE_NO_DATA = 6;  // size=0 无新的测量数据
     public static final int STATE_NO_DEVICE = 7;  // 血压计处于关闭状态
     public static final int STATE_NO_HAND = 8;  // bt socket closed, read return: -1 握手失败 请重试
+    public static final int STATE_BROKEN = 8;  // bt socket closed, read return: -1  //达理 血压计断开蓝牙连接
 
     /**
      * Constructor. Prepares a new BluetoothChat session.
@@ -275,6 +276,20 @@ public class BluetoothService {
                         Log.e(TAG, "血压计temp sockets not created", e);
                     }
                     break;
+                case Constants.ecgdeivce://达理 心电计
+                    try{
+                        tmpIn = socket.getInputStream();
+                        tmpOut = socket.getOutputStream();
+                        Log.i(TAG, "心电计send verify time command");
+                        Log.v(TAG,devicetype);
+                        byte[] _cmd = com.contec.jar.pm10.DeviceCommand.SET_TIME(); // 1.1 获取握手命令代码
+                        tmpOut.write(_cmd);
+                        Message msg = myHandler.obtainMessage(BluetoothService.STATE_CONNECTED);
+                        myHandler.sendMessage(msg);
+                    } catch (IOException e) {
+                        Log.e(TAG, "心电计temp sockets not created", e);
+                    }
+                    break;
            }
             mmInStream = tmpIn;
             mmOutStream = tmpOut;
@@ -298,6 +313,9 @@ public class BluetoothService {
                             break;
                         case Constants.blooddeivce:
                             call.m_mtbuf.write(buffer, bytes, mmOutStream); // 处理来自蓝牙数据
+                            break;
+                        case Constants.ecgdeivce: //心电pm1000 达理
+                            call.m_bpmbuf.write(buffer, bytes, mmOutStream); // 处理来自蓝牙数据
                             break;
                     }
                 } catch (IOException e) {
