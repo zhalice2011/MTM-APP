@@ -59,7 +59,9 @@ public class BpmBuf {
     int _caseLen = 0;
     int _recedataCount = 0;
     int mCaseCount = 1;
-    String name22[]={"未见异常","漏搏","偶发室早","偶发室早","室早二联律","成对室早","室早三连发","室早四连发","室早RonT","心动过缓","心动过速","心律不齐","ST抬高","ST压低"};
+    String name22[]={"未见异常","漏搏","偶发室早","偶发室早","室早二联律","成对室早",
+                    "室早三连发","室早四连发","室早RonT","心动过缓","心动过速","心律不齐",
+                    "ST抬高","ST压低"};
     String Results="";
 
     //达理
@@ -67,6 +69,9 @@ public class BpmBuf {
     private Message msg;
     public Handler getMyHandler() {
         return myHandler;
+    }
+    public void setMyHandler(Handler myHandler) {
+        this.myHandler = myHandler;
     }
 
     public synchronized void write(byte[] buf, int count,
@@ -146,7 +151,7 @@ public class BpmBuf {
 //                        Log.e(TAG, "发送命令->达理再次请求第"+_receCount+"个病例信息: GET_DATA_INFO(2,_receCount"+_receCount);
 //
 //                    }
-                        //pOutputStream.write(DeviceCommand.GET_DATA_INFO(2, _receCount));
+                    //pOutputStream.write(DeviceCommand.GET_DATA_INFO(2, _receCount));
                     //}
 
                     pOutputStream.write(DeviceCommand.GET_DATA(_receCount - 1));  //获取波形图的数据
@@ -307,11 +312,4 @@ public class BpmBuf {
         }
         return len;
     }
-
-
-    public void setMyHandler(Handler myHandler) {
-        this.myHandler = myHandler;
-    }
-
-
 }

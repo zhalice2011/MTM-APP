@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -21,6 +22,8 @@ import java.io.IOException;
 import android.util.Log;
 import android.content.SharedPreferences;
 
+import android.app.ActivityManager;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 public class loginActivity extends AppCompatActivity {
@@ -30,6 +33,30 @@ public class loginActivity extends AppCompatActivity {
     private String ermsg;
     private CheckBox isremember;
     private SharedPreferences logininfor;
+
+
+    public void cancelQuit(){
+        int currentVersion = android.os.Build.VERSION.SDK_INT;
+        if (currentVersion > android.os.Build.VERSION_CODES.ECLAIR_MR1) {
+            Intent startMain = new Intent(Intent.ACTION_MAIN);
+            startMain.addCategory(Intent.CATEGORY_HOME);
+            startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(startMain);
+            System.exit(0);
+        } else {// android2.1
+            ActivityManager am = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
+            am.restartPackage(getPackageName());
+        }
+    }
+    public boolean onKeyDown(int keyCode, KeyEvent event){
+        if(keyCode==KeyEvent.KEYCODE_BACK){
+            cancelQuit();
+            return false;
+        }else{
+            return super.onKeyDown(keyCode, event);
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,6 +83,8 @@ public class loginActivity extends AppCompatActivity {
     public void loginOnClick(View v){
         String username = account.getText().toString();
         String pass = pwd.getText().toString();
+        Log.e("logc",username);
+        Log.e("logc",pass);
         if (TextUtils.isEmpty(username)) {
             ermsg = "账号不能为空！";
             Toast toast=Toast.makeText(loginActivity.this, ermsg, Toast.LENGTH_SHORT);

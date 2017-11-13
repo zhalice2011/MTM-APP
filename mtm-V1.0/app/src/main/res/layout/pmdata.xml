@@ -99,14 +99,15 @@
                 android:layout_height="wrap_content"
                 android:textColor="#bd83cd"
                 android:text="@string/pm_promp" />
+
             <TextView
                 android:id="@+id/results"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="2dp"
+                android:text="室早RonT室早三联律"
                 android:textColor="@color/msgvalue"
-                android:textSize="18dp"
-                android:text="TextView" />
+                android:textSize="18dp" />
 
         </LinearLayout>
 
@@ -134,13 +135,13 @@
         android:layout_marginLeft="8dp">
 
         <ImageView
-            android:id="@+id/imageView2"
+            android:id="@+id/upload"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:src="@drawable/upload" />
 
         <TextView
-            android:id="@+id/textView17"
+            android:id="@+id/reupload"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"

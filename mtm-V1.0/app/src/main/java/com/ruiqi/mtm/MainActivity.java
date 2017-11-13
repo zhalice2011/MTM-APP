@@ -1,10 +1,16 @@
 package com.ruiqi.mtm;
+
 import android.Manifest;
 import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.support.v4.app.ActivityCompat;
+
+import android.content.SharedPreferences;
 import android.view.Gravity;
 import android.view.ViewGroup;
+import android.content.Intent;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import android.app.Dialog;
 import android.bluetooth.BluetoothAdapter;
@@ -20,6 +26,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
@@ -59,6 +66,7 @@ public class MainActivity extends AppCompatActivity implements
     private MtBuf m_mtbuf = new MtBuf();
     private BgBuf m_bgbuf=new BgBuf();
     private BpmBuf m_bpmbuf=new BpmBuf(); //心电 达理
+
     private static  boolean isExit=false;
 
     private Bundle params;
@@ -71,10 +79,11 @@ public class MainActivity extends AppCompatActivity implements
     public static  String devicename;
     public static  String devicetype;
     public static  int deviceimg;
+
     private static final int REQUEST_EXTERNAL_STORAGE = 1; //权限申请 达理
     private static String[] PERMISSIONS_STORAGE = {
             "android.permission.READ_EXTERNAL_STORAGE",
-            "android.permission.WRITE_EXTERNAL_STORAGE" };
+             "android.permission.WRITE_EXTERNAL_STORAGE" };
     //退出
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event){
@@ -87,6 +96,7 @@ public class MainActivity extends AppCompatActivity implements
     public void exit(){
         if(isExit) {
             finish();
+            onDestroy();
             System.exit(0);
         } else{
             isExit=true;
@@ -95,7 +105,21 @@ public class MainActivity extends AppCompatActivity implements
             myHandle.sendEmptyMessageDelayed(0,2000);
         }
     }
-
+    //菜单
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu){
+        getMenuInflater().inflate(R.menu.menu, menu);
+        return true;
+    }
+    public void logOut(MenuItem item){
+        SharedPreferences readdata=getSharedPreferences("login",0) ;
+        SharedPreferences.Editor editor = readdata.edit();
+        editor.clear();
+        editor.commit();
+        Intent logoutIntent = new Intent(MainActivity.this, loginActivity.class);
+        logoutIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(logoutIntent);
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -107,24 +131,24 @@ public class MainActivity extends AppCompatActivity implements
         init();
         verifyStoragePermissions(this); //申请权限 达理
 
-/*
+
         BloodData data = new BloodData();
         data.setTime("2017-12-16 17:17:17");;
-        data.setResults("偶发室早");
+        data.setResults("室早RonT室\n早三联律");
         data.setBpm(86);
-        data.setSys(102);
-        data.setDia(89);
+        //data.setSys(102);
+        //data.setDia(89);
         data.setDatatype("PM");
         sendData(data,true);
-       data.setDatatype("NIBP03");
+    /*   data.setDatatype("NIBP03");
         sendData(data,true);
-*/
+
         BloodData data = new BloodData();
         data.setTime("2017-12-16 17:17:17");;
         data.setBloodSugar("18.8");
         data.setDatatype("BG01");
         sendData(data,true);
-        /*
+        *//*
         BloodData data = new BloodData();
         data.setTime("2017-12-16 17:17:17");;
         data.setSys(125);
@@ -197,12 +221,12 @@ public class MainActivity extends AppCompatActivity implements
         lsvDevices.setAdapter(dev_adapter);
         m_mtbuf.setMyHandler(myHandle);
         m_bgbuf.setMyHandler(myHandle);
-        m_bpmbuf.setMyHandler(myHandle); //达理
-        call = new CallBack(m_mtbuf, this,m_bgbuf,m_bpmbuf); //达理
+        m_bpmbuf.setMyHandler(myHandle);
+        call = new CallBack(m_mtbuf, this,m_bgbuf,m_bpmbuf);
         bluetoothService = new BluetoothService(context, call, myHandle);
         mHandler = new Handler();
         //数据列表的点击事件
-        lsvDevicesData.setOnItemClickListener(dataClickListener);
+        //lsvDevicesData.setOnItemClickListener(dataClickListener);
         // 注册Receiver来获取蓝牙设备相关的结果
         /*
         IntentFilter intentFilter = new IntentFilter();
@@ -227,11 +251,15 @@ public class MainActivity extends AppCompatActivity implements
             bluetoothService.start();
             bluetoothService.setDevicetype(devicetypename);
             //setTitle( "当前设备："+devicetypename);
+            //lsvDevicesData.setAdapter(sim_adapter);
+            dataList.clear();
+            lsvDevicesData.setAdapter(null);
             bluetoothService.connect(bluetoothService.getDevByMac(info));
         }
     };
 
     //点击数据列表重新上传
+   /*
     private AdapterView.OnItemClickListener dataClickListener = new AdapterView.OnItemClickListener() {
 
         public void onItemClick(AdapterView<?> av, View v, int arg2, long arg3) {
@@ -281,9 +309,9 @@ public class MainActivity extends AppCompatActivity implements
                     break;
                 }
             }
-        }
-    };
 
+    };
+}*/
     // 搜索的设备信息
     private BroadcastReceiver searchDevices = new BroadcastReceiver() {
         @Override
@@ -330,8 +358,7 @@ public class MainActivity extends AppCompatActivity implements
                     break;
                 case BluetoothService.STATE_SEND:
                     // 上传数据
-                    //bluetoothService.connectCancel();   //达理  心电计是先发送数据然后获取波形图这里断开蓝牙连接就不能获取蓝牙数据了
-
+                    //bluetoothService.connectCancel();//达理  心电计是先发送数据然后获取波形图这里断开蓝牙连接就不能获取蓝牙数据了
                     BloodData data = (BloodData) msg.obj;
                     if (data != null) {
                         Log.v("sendata",data.toString());
@@ -356,7 +383,7 @@ public class MainActivity extends AppCompatActivity implements
                     break;
                 case BluetoothService.STATE_BROKEN:
                     bluetoothService.connectCancel();
-                    showTip("心电计波形图数据数据接收完成,释放连接成功");
+                    showTip("数据接收结束!");//心电计波形图数据数据接收完成,释放连接成功
                     break;
             }
         }
@@ -380,6 +407,7 @@ public class MainActivity extends AppCompatActivity implements
      * @param //time 采集时间，时间格式：2017-03-01 17:17:21
      * @param //sys 收缩压（高压）
      * @param //dia 舒张压（低压）
+     *
      */
     private void sendData( BloodData data ,boolean put) {
         String serverURL = getResources().getString(R.string.server_url)+"/api/bloodpressure"; // 上传服务器
@@ -540,6 +568,20 @@ public class MainActivity extends AppCompatActivity implements
            // }
         //});
     }
+    //权限申请 达理
+    public static void verifyStoragePermissions(Activity activity) {
+        // Check if we have write permission
+        int permission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        if (permission != PackageManager.PERMISSION_GRANTED) {
+            // We don't have permission so prompt the user
+            ActivityCompat.requestPermissions(
+                    activity,
+                    PERMISSIONS_STORAGE,
+                    REQUEST_EXTERNAL_STORAGE
+            );
+        }
+    }
+
     //自定义适配器
     public class mySimpleAdapter extends SimpleAdapter {
         //重写listview适配器
@@ -554,8 +596,16 @@ public class MainActivity extends AppCompatActivity implements
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
+        public View getView(final int position, View convertView, ViewGroup parent) {
             View view = super.getView(position, convertView, parent);
+            ImageView upload=(ImageView) view.findViewById(R.id.upload);
+            upload.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    reupload(listitem.get(position));
+                }
+            });
+
             //下面设置值变色效果。
             TextView nowdatatype=(TextView)view.findViewById(R.id.datatype);
             if(nowdatatype.getText().toString().equals(Constants.blooddeivce)){
@@ -579,17 +629,51 @@ public class MainActivity extends AppCompatActivity implements
             return view;
         }
     }
-    //权限申请 达理
-    public static void verifyStoragePermissions(Activity activity) {
-        // Check if we have write permission
-        int permission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        if (permission != PackageManager.PERMISSION_GRANTED) {
-            // We don't have permission so prompt the user
-            ActivityCompat.requestPermissions(
-                    activity,
-                    PERMISSIONS_STORAGE,
-                    REQUEST_EXTERNAL_STORAGE
-            );
+    public void  reupload(HashMap<String,Object> updata){
+        Log.e("test","点击事件："+updata.get("datatype").toString());
+        switch (updata.get("datatype").toString()) {
+            case Constants.ecgdeivce: {
+                Log.v("device", "心电计"+updata.get("results").toString());
+                int xl = Integer.parseInt(updata.get("bpm").toString());
+                String results = updata.get("results").toString();
+                String datatype = updata.get("datatype").toString();
+                String time = updata.get("time").toString();
+                BloodData data = new BloodData();
+                data.setTime(time);
+                data.setBpm(xl);
+                data.setResults(results);
+                data.setDatatype(datatype);
+                sendData(data, false);
+                break;
+            }
+            case Constants.blooddeivce: {
+                Log.v("device", "血压计");
+                int gy = Integer.parseInt(updata.get("sys").toString());
+                int dy = Integer.parseInt(updata.get("dia").toString());
+                int xl = Integer.parseInt(updata.get("bpm").toString());
+                String datatype = updata.get("datatype").toString();
+                String time = updata.get("time").toString();
+                BloodData data = new BloodData();
+                data.setTime(time);
+                data.setSys(gy);
+                data.setDia(dy);
+                data.setBpm(xl);
+                data.setDatatype(datatype);
+                sendData(data, false);
+                break;
+            }
+            case Constants.glucometer: {
+                Log.v("device", "血糖仪" + updata.toString());
+                String bloodsugar = updata.get("bloodsugar").toString();
+                String datatype = updata.get("datatype").toString();
+                String time = updata.get("time").toString();
+                BloodData data = new BloodData();
+                data.setTime(time);
+                data.setBloodSugar(bloodsugar);
+                data.setDatatype(datatype);
+                sendData(data, false);
+                break;
+            }
         }
     }
 }
