@@ -9,6 +9,6 @@
     <string name="pm_xlmunit">bpm</string>
     <string name="pm_promp">提示</string>
     <!--- <string name="server_url">http://123.206.85.239</string>-->
-    <string name="server_url">http://0958f3b9.ngrok.io</string>
+    <string name="server_url">http://6d6a5200.ngrok.io</string>
     <string name="exitmsg">再按一次退出程序</string>
 </resources>

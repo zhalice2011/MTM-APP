@@ -131,7 +131,7 @@ public class MainActivity extends AppCompatActivity implements
         init();
         verifyStoragePermissions(this); //申请权限 达理
 
-
+    /*
         BloodData data = new BloodData();
         data.setTime("2017-12-16 17:17:17");;
         data.setResults("室早RonT室\n早三联律");
@@ -140,7 +140,7 @@ public class MainActivity extends AppCompatActivity implements
         //data.setDia(89);
         data.setDatatype("PM");
         sendData(data,true);
-    /*   data.setDatatype("NIBP03");
+      data.setDatatype("NIBP03");
         sendData(data,true);
 
         BloodData data = new BloodData();
@@ -186,7 +186,7 @@ public class MainActivity extends AppCompatActivity implements
                 devicetype=Constants.blooddeivce;
                 devicename=Constants.NIBP03;
                 legaldevice=true;
-            }else if(device.getName().contains(Constants.ecgdeivce)){//PM
+            }else if(device.getName().contains(Constants.ecgdeivce)){//PM ✔
                 deviceimg=R.drawable.pm;
                 devicetype=Constants.ecgdeivce;
                 devicename=Constants.PM;
@@ -250,7 +250,7 @@ public class MainActivity extends AppCompatActivity implements
             // 连接蓝牙设备
             bluetoothService.start();
             bluetoothService.setDevicetype(devicetypename);
-            //setTitle( "当前设备："+devicetypename);
+            bluetoothService.connectedServer();
             //lsvDevicesData.setAdapter(sim_adapter);
             dataList.clear();
             lsvDevicesData.setAdapter(null);

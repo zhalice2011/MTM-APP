@@ -101,7 +101,7 @@ public class BgBuf {
                 myHandler.sendMessage(msg);
                // new Thread() {
                //     public void run() {
-                /*
+
                         try {
                             Thread.sleep(300);
 ,                            Log.i(TAG, "成功接收数据 发送删除命令");
@@ -109,7 +109,7 @@ public class BgBuf {
                             //BluetoothService.run = false;
                         } catch (Exception e) {
                             e.printStackTrace();
-                        }*/
+                        }
                   //  };
               //  }.start();
 

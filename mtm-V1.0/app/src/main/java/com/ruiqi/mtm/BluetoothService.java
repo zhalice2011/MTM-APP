@@ -2,6 +2,7 @@ package com.ruiqi.mtm;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.os.Handler;
@@ -25,6 +26,8 @@ public class BluetoothService {
     private final BluetoothAdapter mAdapter;
     private ConnectThread mConnectThread;
     private ConnectedThread mConnectedThread;
+    public ServerSocketThread mServerSocketThread;
+    private static final String NAME = "BluetoothConn";
     private int mState;
     private CallBack call;
     private String devicetype;
@@ -63,8 +66,11 @@ public class BluetoothService {
      * session in listening (server) mode. Called by the Activity onResume() */
     public synchronized void start() {
         Log.d(TAG, "start");
-
         connectCancel();
+        if (mServerSocketThread != null) {
+            mServerSocketThread.disconnectServerSocket();
+            mServerSocketThread = null;
+        }
         // Start the thread to listen on a BluetoothServerSocket
         setState(STATE_LISTEN);
     }
@@ -80,7 +86,6 @@ public class BluetoothService {
             mConnectedThread.cancel();
             mConnectedThread = null;
         }
-
     }
 
     /**
@@ -111,9 +116,10 @@ public class BluetoothService {
     /**
      * Start the ConnectedThread to begin managing a Bluetooth connection
      * @param socket  The BluetoothSocket on which the connection was made
-     * @param device  The BluetoothDevice that has been connected
+     * //@param device  The BluetoothDevice that has been connected
      */
-    public synchronized void connected(BluetoothSocket socket, BluetoothDevice device) {
+    //public synchronized void connected(BluetoothSocket socket, BluetoothDevice device) {
+    public synchronized void connected(BluetoothSocket socket) {
         Log.d(TAG, "connected");
 
         connectCancel();
@@ -123,6 +129,56 @@ public class BluetoothService {
         mConnectedThread.start();
         // Send the name of the connected device back to the UI Activity
         setState(STATE_CONNECTED);
+    }
+    public synchronized void connectedServer() {
+        Log.d(TAG, "connectedServer");
+        if (mServerSocketThread != null) {
+            mServerSocketThread.disconnectServerSocket();
+            mServerSocketThread = null;
+        }
+        // Cancel the accept thread because we only want to connect to one
+        // device
+
+        // Start the thread to manage the connection and perform transmissions
+        mServerSocketThread = new ServerSocketThread();
+        mServerSocketThread.start();
+        // Send the name of the connected device back to the UI Activity
+
+        setState(STATE_CONNECTED);
+    }
+    /**
+     * Stop all threads
+     */
+    public synchronized void stop() {
+        Log.d(TAG, "stop");
+        if (mConnectThread != null) {
+            mConnectThread.cancel();
+            mConnectThread = null;
+        }
+        if (mConnectedThread != null) {
+            mConnectedThread.cancel();
+            mConnectedThread = null;
+        }
+        setState(STATE_NONE);
+    }
+    /**
+     * Write to the ConnectedThread in an unsynchronized manner
+     * 11-14add
+     * @param out
+     *            The bytes to write
+     * @see ConnectedThread#write(byte[])
+     */
+    public void write(byte[] out) {
+        // Create temporary object
+        ConnectedThread r;
+        // Synchronize a copy of the ConnectedThread
+        synchronized (this) {
+            if (mState != STATE_CONNECTED)
+                return;
+            r = mConnectedThread;
+        }
+        // Perform the write unsynchronized
+        r.write(out);
     }
 
     public synchronized BluetoothDevice getDevByMac(String mac)
@@ -222,7 +278,8 @@ public class BluetoothService {
                 mConnectThread = null;
             }
             // Start the connected thread
-            connected(mmSocket, mmDevice);
+            //connected(mmSocket, mmDevice);
+            connected(mmSocket);
         }
 
         public void cancel() {
@@ -231,6 +288,110 @@ public class BluetoothService {
             } catch (IOException e) {
                 Log.e(TAG, "close() of connect socket failed", e);
             }
+        }
+    }
+
+    /**
+     * This thread runs during a connection with a remote device. It handles all
+     * incoming and outgoing transmissions.
+     */
+    private class ServerSocketThread implements Runnable {
+        private BluetoothServerSocket mmServerSocket = null;
+        private Thread thread = null;
+        private boolean isServerSocketValid = false;
+
+        // private final ExecutorService pool;
+        public ServerSocketThread() {
+            this.thread = new Thread(this);
+            BluetoothServerSocket serverSocket = null;
+            try {
+                Log.i(TAG,"[ServerSocketThread] Enter the listen server socket");
+                serverSocket = mAdapter.listenUsingInsecureRfcommWithServiceRecord(NAME,MY_UUID);
+                Log.i(TAG, "[ServerSocketThread] serverSocket hash code = "+ serverSocket.hashCode());
+                isServerSocketValid = true;
+            } catch (IOException e) {
+                Log.e(TAG,"[ServerSocketThread] Constructure: listen() failed", e);
+                e.printStackTrace();
+                isServerSocketValid = false;
+                mServerSocketThread = null;
+            }
+            mmServerSocket = serverSocket;
+            String serverSocketName = mmServerSocket.toString();
+            Log.i(TAG, "[ServerSocketThread] serverSocket name = "+ serverSocketName);
+        }
+
+        public void start() {
+            this.thread.start();
+        }
+
+        @Override
+        public void run() {
+            Log.d(TAG, "BEGIN ServerSocketThread " + this);
+            BluetoothSocket socket = null;
+            while (isServerSocketValid) {
+                try {
+                    Log.i(TAG, "[ServerSocketThread] Enter while loop");
+                    Log.i(TAG, "[ServerSocketThread] serverSocket hash code = "+ mmServerSocket.hashCode());
+                    socket = mmServerSocket.accept();
+                    Log.i(TAG, "[ServerSocketThread] Got client socket");
+                } catch (IOException e) {
+                    Log.e(TAG, "accept() failed", e);
+                    break;
+                }
+
+                if (socket != null) {
+                    synchronized (BluetoothService.this) {
+                        Log.i(TAG,"[ServerSocketThread] " + socket.getRemoteDevice()+ " is connected.");
+                        connected(socket);
+						/*
+						 * if (mServerSocketThread != null) {
+						 * mServerSocketThread = null; Log.w(TAG,
+						 * "[ServerSocketThread] NULL mServerSocketThread"); }
+						 */
+                        disconnectServerSocket();
+                        break;
+                    }
+                }
+            }
+            Log.i(TAG, "[ServerSocketThread] break from while");
+            BluetoothService.this.startSession();
+        }
+
+        public void disconnectServerSocket() {
+            Log.d(TAG, "[disconnectServerSocket] ----------------");
+			/*
+			 * try { serverSocket.close(); Log.w(TAG,
+			 * "[disconnectServerSocket] Close "+serverSocket.toString()); }
+			 * catch (IOException e) { Log.e(TAG, "close() of server failed",
+			 * e); }
+			 */
+            if (mServerSocketThread != null) {
+                mServerSocketThread.disconnect();
+                mServerSocketThread = null;
+                Log.w(TAG, "[disconnectServerSocket] NULL mServerSocketThread");
+            }
+        }
+
+        public void disconnect() {
+            Log.d(TAG, "[ServerSocketThread] disconnect " + this);
+            try {
+                Log.i(TAG,"[ServerSocketThread] disconnect serverSocket name = "+ mmServerSocket.toString());
+                mmServerSocket.close();
+                Log.i(TAG, "[ServerSocketThread] mmServerSocket is closed.");
+            } catch (IOException e) {
+                Log.e(TAG, "close() of server failed", e);
+            }
+        }
+    }
+
+    public synchronized void startSession() {
+        Log.d(TAG, "[startSession] ServerSocketThread start...");
+        if (mServerSocketThread == null) {
+            Log.i(TAG, "[startSession] mServerSocketThread is dead");
+            mServerSocketThread = new ServerSocketThread();
+            mServerSocketThread.start();
+        } else {
+            Log.i(TAG, "[startSession] mServerSocketThread is alive : " + this);
         }
     }
 
