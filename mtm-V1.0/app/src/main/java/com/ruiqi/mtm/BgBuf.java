@@ -104,7 +104,7 @@ public class BgBuf {
 
                         try {
                             Thread.sleep(300);
-,                            Log.i(TAG, "成功接收数据 发送删除命令");
+                            Log.i(TAG, "成功接收数据 发送删除命令");
                             pOutputStream.write(DeviceCommand.command_delData());// 发送删除数据的命令
                             //BluetoothService.run = false;
                         } catch (Exception e) {

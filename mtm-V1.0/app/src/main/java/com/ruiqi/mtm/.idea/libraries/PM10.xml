@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="PM10">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/app/libs/PM10.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

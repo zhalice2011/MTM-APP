@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingTop="5dp"
+    android:paddingBottom="5dp"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
+    android:background="@drawable/data_list_bg">
+
+    <View
+        android:id="@+id/dali_view"
+        android:layout_width="1dp"
+        android:layout_height="80dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="0dp"
+        android:layout_gravity="center"
+        android:background="#48cda6"></View>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/pic"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:src="@drawable/blood" />
+
+        <TextView
+            android:id="@+id/times"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:textAlignment="center"
+            android:layout_weight="1"
+            android:text="2017-11-01 18:20:32"
+            android:textColor="#bd83cd"
+            android:textSize="15dp" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="1dp"
+        android:layout_height="80dp"
+        android:background="#48cda6"
+        android:layout_gravity="center"
+        ></View>
+    <GridLayout
+        android:layout_width="170dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/data_area"
+        android:columnCount="3"
+        android:layout_gravity="center"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="15dp"
+        android:padding="8dp"
+        android:rowCount="3">
+        <TextView
+            android:id="@+id/systitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:layout_marginLeft="5dp"
+            android:layout_weight="0.56"
+            android:text="高压"
+            android:textColor="#bd83cd"
+            android:textSize="15dp" />
+
+        <TextView
+            android:id="@+id/sys"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_gravity="center_horizontal"
+            android:textColor="@color/value"
+            android:textSize="22dp"
+            android:text="140" />
+
+        <TextView
+            android:id="@+id/sysunit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="mmHg" />
+
+        <TextView
+            android:id="@+id/diatitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:layout_marginLeft="5dp"
+            android:text="低压"
+            android:textColor="#bd83cd"
+            android:textSize="15dp" />
+
+        <TextView
+            android:id="@+id/dia"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:textColor="@color/value"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:textSize="22dp"
+            android:text="60" />
+
+        <TextView
+            android:id="@+id/diaunit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="mmHg" />
+
+        <TextView
+            android:id="@+id/bpmtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:layout_marginLeft="5dp"
+            android:text="脉率"
+            android:textColor="#bd83cd"
+            android:textSize="15dp" />
+
+        <TextView
+            android:id="@+id/bpm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:textSize="22dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:textColor="@color/value"
+            android:text="60" />
+
+        <TextView
+            android:id="@+id/bmpunit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="bpm" />
+
+        <TextView
+            android:id="@+id/datatype"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:text="血压计"
+            android:textColor="#bd83cd"
+            android:textSize="15dp"
+            android:visibility="gone" />
+
+    </GridLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/upload"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/upload" />
+
+        <TextView
+            android:id="@+id/reupload"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textAlignment="center"
+            android:text="重新\n上传"
+            android:textColor="#f46c9a" />
+    </LinearLayout>
+
+</LinearLayout>

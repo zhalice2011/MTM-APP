@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="CONTEC08A_SDK v1.6">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/app/libs/CONTEC08A_SDK v1.6.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

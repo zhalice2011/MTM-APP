@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="CMSSXT">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/app/libs/CMSSXT.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
