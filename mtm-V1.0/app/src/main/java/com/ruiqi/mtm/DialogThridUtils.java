@@ -17,12 +17,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-/**
- * @author ：程序员小冰
- * @新浪微博 ：http://weibo.com/mcxiaobing
- * @GitHub: https://github.com/QQ986945193
- * @CSDN博客: http://blog.csdn.net/qq_21376985
- */
 public class DialogThridUtils {
     /**
      * 显示Dialog
@@ -54,7 +48,8 @@ public class DialogThridUtils {
         Window window = loadingDialog.getWindow();
         WindowManager.LayoutParams lp = window.getAttributes();
         lp.width = WindowManager.LayoutParams.MATCH_PARENT;
-        lp.height = 400;//WindowManager.LayoutParams.WRAP_CONTENT;
+        lp.height = 500;
+        //lp.height=WindowManager.LayoutParams.WRAP_CONTENT;
         window.setGravity(Gravity.CENTER);
         window.setAttributes(lp);
         window.setWindowAnimations(R.style.PopWindowAnimStyle);
