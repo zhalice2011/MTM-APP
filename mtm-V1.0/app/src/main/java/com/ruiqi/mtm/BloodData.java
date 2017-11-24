@@ -14,13 +14,20 @@ public class BloodData {
     private int dia;
     // 心率 (bpm)
     private int bpm;
+    //血糖值
+    private String bloodsugar;
+    // 血氧 (bpm)
+    private int spo;
+    // 脉率 (pr)
+    private int pr;
+    // 体重 (wt)
+    private String wt;
     //数据来源(datatype)
     private String datatype;
 
     // 心电计---分析结果
     private String results;
-    //血糖值
-    private String bloodsugar;
+
 
     public String getTime() {
         return time;
@@ -50,8 +57,29 @@ public class BloodData {
         return bpm;
     }
 
+    public int getSpo() {
+        return spo;
+    }
+
+    public int getPr() {
+        return pr;
+    }
+
+    public String getWt() {
+        return wt;
+    }
+
     public void setBpm(int bpm) {
         this.bpm = bpm;
+    }
+    public void setSpo(int spo) {
+        this.spo = spo;
+    }
+    public void setPr(int pr) {
+        this.pr = pr;
+    }
+    public void setWt(String wt) {
+        this.wt = wt;
     }
     public String getDatatype() {
         return datatype;

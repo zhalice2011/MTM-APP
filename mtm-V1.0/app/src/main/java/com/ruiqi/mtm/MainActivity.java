@@ -65,8 +65,9 @@ public class MainActivity extends AppCompatActivity implements
     private Handler mHandler;
     private MtBuf m_mtbuf = new MtBuf();
     private BgBuf m_bgbuf=new BgBuf();
-    private BpmBuf m_bpmbuf=new BpmBuf(); //心电 达理
-
+    private BpmBuf m_bpmbuf=new BpmBuf();
+    private SpoBuf m_spobuf=new SpoBuf();
+    private WTBuf m_wtbuf=new WTBuf();
     private static  boolean isExit=false;
 
     private Bundle params;
@@ -191,7 +192,7 @@ public class MainActivity extends AppCompatActivity implements
                 devicetype=Constants.ecgdeivce;
                 devicename=Constants.PM;
                 legaldevice=true;
-            }else if(device.getName().contains(Constants.pulsedeice)){ //spo
+            }else if(device.getName().contains(Constants.pulsedeice)){ //spodata
                 devicename=Constants.SpO;
                 devicetype=Constants.pulsedeice;
                 deviceimg=R.drawable.jerry;
@@ -200,6 +201,11 @@ public class MainActivity extends AppCompatActivity implements
                 devicename=Constants.bg0;
                 devicetype=Constants.glucometer;
                 deviceimg=R.drawable.glucometer;
+                legaldevice=true;
+            }else if(device.getName().contains(Constants.weightscale)){ //WT   ✔
+                devicename=Constants.WT;
+                devicetype=Constants.weightscale;
+                deviceimg=R.drawable.weightscale;
                 legaldevice=true;
             }
 
@@ -222,7 +228,9 @@ public class MainActivity extends AppCompatActivity implements
         m_mtbuf.setMyHandler(myHandle);
         m_bgbuf.setMyHandler(myHandle);
         m_bpmbuf.setMyHandler(myHandle);
-        call = new CallBack(m_mtbuf, this,m_bgbuf,m_bpmbuf);
+        m_spobuf.setMyHandler(myHandle);
+        m_wtbuf.setMyHandler(myHandle);
+        call = new CallBack(m_mtbuf, this,m_bgbuf,m_bpmbuf,m_spobuf,m_wtbuf);
         bluetoothService = new BluetoothService(context, call, myHandle);
         mHandler = new Handler();
         //数据列表的点击事件
@@ -385,6 +393,9 @@ public class MainActivity extends AppCompatActivity implements
                     bluetoothService.connectCancel();
                     showTip("数据接收结束!");//心电计波形图数据数据接收完成,释放连接成功
                     break;
+                case BluetoothService.STATE_CLEAR:
+                    dataList.clear();
+                    break;
             }
         }
     };
@@ -489,6 +500,50 @@ public class MainActivity extends AppCompatActivity implements
                     blsugar.put("time",data.getTime());
                     blsugar.put("datatype",data.getDatatype());
                     dataList.add(blsugar);
+                }
+                break;
+            case Constants.pulsedeice :// 血氧
+                //生成json数据
+                try {
+                    jsonObject.put("sid", storeid);
+                    jsonObject.put("time", data.getTime());
+                    jsonObject.put("spodata", data.getSpo());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                //渲染页面
+                if(put){ //点击上传还是渲染数据
+                    sim_adapter = new mySimpleAdapter(this, dataList, R.layout.spodata,
+                            new String[]{"spo","time","datatype"},
+                            new int[]{R.id.spo,R.id.times,R.id.datatype});
+                    lsvDevicesData.setAdapter(sim_adapter);
+                    HashMap<String, Object> spo = new HashMap<String, Object>();
+                    spo.put("spo",data.getSpo());
+                    spo.put("time",data.getTime());
+                    spo.put("datatype",data.getDatatype());
+                    dataList.add(spo);
+                }
+                break;
+            case Constants.weightscale :// 体重计
+                //生成json数据
+                try {
+                    jsonObject.put("sid", storeid);
+                    jsonObject.put("time", data.getTime());
+                    jsonObject.put("wtdata", data.getWt());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                //渲染页面
+                if(put){ //点击上传还是渲染数据
+                    sim_adapter = new mySimpleAdapter(this, dataList, R.layout.wtdata,
+                            new String[]{"wt","time","datatype"},
+                            new int[]{R.id.wt,R.id.times,R.id.datatype});
+                    lsvDevicesData.setAdapter(sim_adapter);
+                    HashMap<String, Object> wt = new HashMap<String, Object>();
+                    wt.put("wt",data.getWt());
+                    wt.put("time",data.getTime());
+                    wt.put("datatype",data.getDatatype());
+                    dataList.add(wt);
                 }
                 break;
         }

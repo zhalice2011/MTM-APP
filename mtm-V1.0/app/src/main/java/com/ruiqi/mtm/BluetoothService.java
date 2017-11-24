@@ -43,6 +43,7 @@ public class BluetoothService {
     public static final int STATE_NO_DEVICE = 7;  // 血压计处于关闭状态
     public static final int STATE_NO_HAND = 8;  // bt socket closed, read return: -1 握手失败 请重试
     public static final int STATE_BROKEN = 8;  // bt socket closed, read return: -1  //达理 血压计断开蓝牙连接
+    public static final int STATE_CLEAR = 9;  // bt socket closed, read return: -1  //达理 血压计断开蓝牙连接
 
     /**
      * Constructor. Prepares a new BluetoothChat session.
@@ -437,7 +438,7 @@ public class BluetoothService {
                         Log.e(TAG, "血压计temp sockets not created", e);
                     }
                     break;
-                case Constants.ecgdeivce://达理 心电计
+                case Constants.ecgdeivce://心电计
                     try{
                         tmpIn = socket.getInputStream();
                         tmpOut = socket.getOutputStream();
@@ -449,6 +450,34 @@ public class BluetoothService {
                         myHandler.sendMessage(msg);
                     } catch (IOException e) {
                         Log.e(TAG, "心电计temp sockets not created", e);
+                    }
+                    break;
+                case Constants.pulsedeice://血氧仪
+                    try{
+                        tmpIn = socket.getInputStream();
+                        tmpOut = socket.getOutputStream();
+                        Log.i(TAG, "血氧仪send verify time command");
+                        Log.v(TAG,devicetype);
+                        byte[] _cmd = com.contec.cms50dj_jar.DeviceCommand.deviceConfirmCommand(); // 1.1 发送索要设备号命令
+                        tmpOut.write(_cmd);
+                        Message msg = myHandler.obtainMessage(BluetoothService.STATE_CONNECTED);
+                        myHandler.sendMessage(msg);
+                    } catch (IOException e) {
+                        Log.e(TAG, "血氧仪temp sockets not created", e);
+                    }
+                    break;
+                case Constants.weightscale://体重秤
+                    try{
+                        tmpIn = socket.getInputStream();
+                        tmpOut = socket.getOutputStream();
+                        Log.i(TAG, "体重秤send verify time command");
+                        Log.v(TAG,devicetype);
+                        byte[] _cmd = cn.com.contec.jar.wt100.DeviceCommand.command_VerifyTime(); // 1.1 发送设置时间命令
+                        tmpOut.write(_cmd);
+                        Message msg = myHandler.obtainMessage(BluetoothService.STATE_CONNECTED);
+                        myHandler.sendMessage(msg);
+                    } catch (IOException e) {
+                        Log.e(TAG, "体重秤temp sockets not created", e);
                     }
                     break;
            }
@@ -475,8 +504,14 @@ public class BluetoothService {
                         case Constants.blooddeivce:
                             call.m_mtbuf.write(buffer, bytes, mmOutStream); // 处理来自蓝牙数据
                             break;
-                        case Constants.ecgdeivce: //心电pm1000 达理
-                            call.m_bpmbuf.write(buffer, bytes, mmOutStream); // 处理来自蓝牙数据
+                        case Constants.ecgdeivce: //心电pm1000
+                            call.m_bpmbuf.write(buffer, bytes, mmOutStream);
+                            break;
+                        case Constants.pulsedeice: //血氧
+                            call.m_spobuf.write(buffer, bytes, mmOutStream);
+                            break;
+                        case Constants.weightscale: //体重
+                            call.m_wtbuf.write(buffer, bytes, mmOutStream);
                             break;
                     }
                 } catch (IOException e) {

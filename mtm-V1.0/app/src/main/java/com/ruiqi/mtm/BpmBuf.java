@@ -130,30 +130,6 @@ public class BpmBuf {
                     data.setDatatype(Constants.ecgdeivce);
                     msg.obj = data;
                     myHandler.sendMessage(msg);
-//                    if ((_receCount - 1) == mCount) {  //表示是最后一条数据了
-//                        //pOutputStream.write(DeviceCommand.GET_DATA_RE(0));
-//                        //bluetoothService.connectCancel();
-//                        Message msg2 = myHandler.obtainMessage(BluetoothService.STATE_BROKEN);
-//                        myHandler.sendMessage(msg2);
-//                        pOutputStream.write(DeviceCommand.GET_DATA_RE(0));
-//                        try {
-//                            Thread.sleep(300);
-//                        } catch (InterruptedException e) {
-//                            // TODO Auto-generated catch block
-//                            e.printStackTrace();
-//                        }
-//                        //bluetoothService.connectCancel();
-//                        pOutputStream.write(DeviceCommand.DELETE_DATA(0, 0));
-//                        Log.e(TAG, "发送命令->删除数据: DELETE_DATA(0, 0)");
-//
-//                    }else{
-//                        pOutputStream.write(DeviceCommand.GET_DATA_INFO(2, _receCount));
-//                        Log.e(TAG, "发送命令->达理再次请求第"+_receCount+"个病例信息: GET_DATA_INFO(2,_receCount"+_receCount);
-//
-//                    }
-                    //pOutputStream.write(DeviceCommand.GET_DATA_INFO(2, _receCount));
-                    //}
-
                     pOutputStream.write(DeviceCommand.GET_DATA(_receCount - 1));  //获取波形图的数据
                     Log.e("发送命令：", "->获取第"+(_receCount-1)+"个波形图数据:  GET_DATA(_receCount - 1)");
                     break;

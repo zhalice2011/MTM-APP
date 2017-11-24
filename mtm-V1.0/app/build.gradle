@@ -33,4 +33,6 @@ dependencies {
     compile files('libs/PM10.jar')
     compile files('libs/CMSSXT.jar')
     compile files('libs/cn.com.contec.ecgac.busec.jar')
+    compile files('libs/project_cms50dj_jar.jar')
+    compile files('libs/WT_SDK.jar')
 }
