@@ -53,9 +53,6 @@ public class SpoBuf {
         int _receiveNum = m_DevicePackManager.arrangeMessage(buf, count);
         switch (_receiveNum) {
             case 1:// 得到设备号 发送校时命令
-                // DeviceManager.m_DeviceBean.mProgress = 5;
-                // App_phms.getInstance().mEventBusPostOnBackGround
-                // .postInMainThread(DeviceManager.m_DeviceBean);
                 try {
                     pOutputStream.write(DeviceCommand.correctionDateTime());
                     Log.i(TAG, "获取设备号成功 发送校时命令--->DeviceCommand.correctionDateTime()");
@@ -64,9 +61,6 @@ public class SpoBuf {
                 }
                 break;
             case 2:// 对时成功
-                // DeviceManager.m_DeviceBean.mProgress = 10;
-                // App_phms.getInstance().mEventBusPostOnBackGround
-                // .postInMainThread(DeviceManager.m_DeviceBean);
                 try {
                     pOutputStream.write(DeviceCommand.setPedometerInfo("175", "75", 0, 24, 10000, 1));
 
@@ -102,43 +96,37 @@ public class SpoBuf {
                 myHandler.sendMessage(msg4);
                 //此时应该对血氧、脉率数据进行处理和发送请求计步器以天为单位的数据的命令
                 //字节数组的长度是8，前6个字节表示血氧、脉率的测量时间： 年 （eg：2014->14）、月、日、时、分、秒，第7、8个字节分别表示血氧值和脉率值。
-                            DeviceData50DJ_Jar _djData = m_DevicePackManager.getDeviceData50dj();
-                                for (int i = 0; i < _djData.getmSp02DataList().size(); i++) {
-                                    byte[] _data = _djData.getmSp02DataList().get(i);
-                                    int year = _data[0] & 0xff;// 年
-                                    int month = _data[1] & 0xff;//  月
-                                    int day = _data[2] & 0xff;//  日
-                                    int hour = _data[3] & 0xff;// 时
-                                    int min = _data[4] & 0xff;//  分
-                                    int sec = _data[5] & 0xff;//  秒
-                                    int sp0 = _data[6] & 0xff;//  血氧
-                                    int bpm = _data[7] & 0xff;//  脉率
-                                    String date = "20"+String.valueOf(year) + "-" + getTimeFormat(month) + "-" + getTimeFormat(day)
-                                            + " "
-                                            + getTimeFormat(hour) + ":"+ getTimeFormat(min) + ":"+ getTimeFormat(sec);
-                                    //提交数据
-                                    Message msg2 = myHandler.obtainMessage(BluetoothService.STATE_SEND);
-                                    BloodData data = new BloodData();
-                                    data.setTime(date); //时间
-                                    data.setSpo(sp0);   //血氧
-                                    data.setDatatype(Constants.pulsedeice);
-                                    msg2.obj = data;
-                                    Log.v(TAG,"秒钟:"+sec+"血氧:"+sp0+"/脉率"+bpm);
-                                    myHandler.sendMessage(msg2);
+                DeviceData50DJ_Jar _djData = m_DevicePackManager.getDeviceData50dj();
+                    for (int i = 0; i < _djData.getmSp02DataList().size(); i++) {
+                        byte[] _data = _djData.getmSp02DataList().get(i);
+                        int year = _data[0] & 0xff;// 年
+                        int month = _data[1] & 0xff;//  月
+                        int day = _data[2] & 0xff;//  日
+                        int hour = _data[3] & 0xff;// 时
+                        int min = _data[4] & 0xff;//  分
+                        int sec = _data[5] & 0xff;//  秒
+                        int sp0 = _data[6] & 0xff;//  血氧
+                        int bpm = _data[7] & 0xff;//  脉率
+                        String date = "20"+String.valueOf(year) + "-" + getTimeFormat(month) + "-" + getTimeFormat(day)
+                                + " "
+                                + getTimeFormat(hour) + ":"+ getTimeFormat(min) + ":"+ getTimeFormat(sec);
+                        //提交数据
+                        Message msg2 = myHandler.obtainMessage(BluetoothService.STATE_SEND);
+                        BloodData data = new BloodData();
+                        data.setTime(date); //时间
+                        data.setSpo(sp0);   //血氧
+                        data.setPr(bpm);   //脉率
+                        data.setDatatype(Constants.pulsedeice);
+                        msg2.obj = data;
+                        Log.v(TAG,"秒钟:"+sec+"血氧:"+sp0+"/脉率"+bpm);
+                        myHandler.sendMessage(msg2);
 
-                                }
-                //DeviceCommand.
-
-
-                            pOutputStream.write(DeviceCommand.dayPedometerDataCommand()); //发送请求计步器以天为单位的数据的命令
-                            //DeviceManager.m_DeviceBean
-                            //释放连接
-                            //释放连接
-                            //DeviceCommand.dataUploadSuccessCommand();
-                            Log.v(TAG,"发送以天为单位的计步器数据  dayPedometerDataCommand 返回 10时，以天为单位 计步器数据 一包上传完成，返回11时，以天为单位计步器数据上一包上传成功请求下一包数据，返回12时，以天为单位的计步器数据全部上传完成，返回17时，以天为单位 计步器无新数据，返回13，计步器以天为单位的数据上传失败 ");
-                            //pOutputStream.write(DeviceCommand.minPedometerDataSuccessCommand())
-//                            Message msg2 = myHandler.obtainMessage(BluetoothService.STATE_BROKEN);
-//                            myHandler.sendMessage(msg2);
+                    }
+                pOutputStream.write(DeviceCommand.dayPedometerDataCommand()); //发送请求计步器以天为单位的数据的命令
+                Log.v(TAG,"发送以天为单位的计步器数据  dayPedometerDataCommand 返回 10时，以天为单位 计步器数据 一包上传完成，返回11时，以天为单位计步器数据上一包上传成功请求下一包数据，返回12时，以天为单位的计步器数据全部上传完成，返回17时，以天为单位 计步器无新数据，返回13，计步器以天为单位的数据上传失败 ");
+                //pOutputStream.write(DeviceCommand.minPedometerDataSuccessCommand())
+                //Message msg2 = myHandler.obtainMessage(BluetoothService.STATE_BROKEN);
+                //myHandler.sendMessage(msg2);
                 break;
             case 6://一包数据接收完毕 ；发送数据上传成功的指令，（必须这样发）
                 Log.i(TAG, "一包血氧、脉率数据接收完毕  发送数据上传成功的指令---> DeviceCommand.dataUploadSuccessCommand ()");
@@ -216,13 +204,6 @@ public class SpoBuf {
             case 16:
                 // 以分为单位计步器 数据 全部 上传成功 关闭socket
                 // TODO 存储以分为单位的数据
-//			        savePedometerMindata();
-//			        App_phms.getInstance().mEventBusPostOnBackGround
-//					.postInMainThread(DeviceManager.m_DeviceBean);
-//                DeviceDataPedometerJar _pedometerDatamin = m_DevicePackManager
-//                        .getM_DeviceDataPedometers();
-//                List<MinData> _list =	_pedometerDatamin.getmPedometerDataMinList()
-
                 Log.i(TAG, " 以分为单位计步器 数据 全部 上传成功 关闭socket ");
                 break;
             case 17:// 以天为单位 计步器无新数据

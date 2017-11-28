@@ -49,26 +49,24 @@
         android:background="#48cda6"
         android:layout_gravity="center_vertical"
         ></View>
-
     <GridLayout
         android:layout_width="170dp"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="10dp"
         android:background="@drawable/data_area"
-        android:columnCount="1"
-        android:minWidth="140dp"
+        android:columnCount="3"
+        android:layout_gravity="center"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="15dp"
         android:padding="8dp"
-        android:rowCount="1">
-
+        android:rowCount="3">
         <TextView
             android:id="@+id/spotitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="left"
             android:layout_marginLeft="5dp"
-            android:text="血氧饱和度%"
+            android:layout_weight="0.56"
+            android:text="血氧"
             android:textColor="#bd83cd"
             android:textSize="15dp" />
 
@@ -76,23 +74,60 @@
             android:id="@+id/spo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
             android:layout_marginLeft="10dp"
-            android:layout_marginRight="5dp"
-            android:text="140"
+            android:layout_marginRight="10dp"
+            android:layout_gravity="center_horizontal"
             android:textColor="@color/value"
-            android:textSize="32dp" />
+            android:textSize="22dp"
+            android:text="140" />
+
+        <TextView
+            android:id="@+id/sysunit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="%" />
+
+
+
+        <TextView
+            android:id="@+id/prtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:layout_marginLeft="5dp"
+            android:text="脉率"
+            android:textColor="#bd83cd"
+            android:textSize="15dp" />
+
+        <TextView
+            android:id="@+id/pr"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:textSize="22dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:textColor="@color/value"
+            android:text="60" />
+
+        <TextView
+            android:id="@+id/bmpunit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="bpm" />
+
         <TextView
             android:id="@+id/datatype"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="left"
-            android:text="血压计"
+            android:text="脉搏血氧仪"
             android:textColor="#bd83cd"
             android:textSize="15dp"
             android:visibility="gone" />
 
     </GridLayout>
+
 
     <LinearLayout
         android:layout_width="wrap_content"

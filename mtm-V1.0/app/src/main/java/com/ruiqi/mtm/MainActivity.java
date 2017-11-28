@@ -17,7 +17,6 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
@@ -391,7 +390,7 @@ public class MainActivity extends AppCompatActivity implements
                     break;
                 case BluetoothService.STATE_BROKEN:
                     bluetoothService.connectCancel();
-                    showTip("数据接收结束!");//心电计波形图数据数据接收完成,释放连接成功
+                    //showTip("数据接收结束!");//心电计波形图数据数据接收完成,释放连接成功
                     break;
                 case BluetoothService.STATE_CLEAR:
                     dataList.clear();
@@ -507,18 +506,20 @@ public class MainActivity extends AppCompatActivity implements
                 try {
                     jsonObject.put("sid", storeid);
                     jsonObject.put("time", data.getTime());
-                    jsonObject.put("spodata", data.getSpo());
+                    jsonObject.put("spo2", data.getSpo());
+                    jsonObject.put("pr", data.getPr());
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
                 //渲染页面
                 if(put){ //点击上传还是渲染数据
                     sim_adapter = new mySimpleAdapter(this, dataList, R.layout.spodata,
-                            new String[]{"spo","time","datatype"},
-                            new int[]{R.id.spo,R.id.times,R.id.datatype});
+                            new String[]{"spo","pr","time","datatype"},
+                            new int[]{R.id.spo,R.id.pr,R.id.times,R.id.datatype});
                     lsvDevicesData.setAdapter(sim_adapter);
                     HashMap<String, Object> spo = new HashMap<String, Object>();
                     spo.put("spo",data.getSpo());
+                    spo.put("pr",data.getPr());
                     spo.put("time",data.getTime());
                     spo.put("datatype",data.getDatatype());
                     dataList.add(spo);
@@ -529,18 +530,18 @@ public class MainActivity extends AppCompatActivity implements
                 try {
                     jsonObject.put("sid", storeid);
                     jsonObject.put("time", data.getTime());
-                    jsonObject.put("wtdata", data.getWt());
+                    jsonObject.put("weight", data.getWt());
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
                 //渲染页面
                 if(put){ //点击上传还是渲染数据
                     sim_adapter = new mySimpleAdapter(this, dataList, R.layout.wtdata,
-                            new String[]{"wt","time","datatype"},
-                            new int[]{R.id.wt,R.id.times,R.id.datatype});
+                            new String[]{"weight","time","datatype"},
+                            new int[]{R.id.weight,R.id.times,R.id.datatype});
                     lsvDevicesData.setAdapter(sim_adapter);
                     HashMap<String, Object> wt = new HashMap<String, Object>();
-                    wt.put("wt",data.getWt());
+                    wt.put("weight",data.getWt());
                     wt.put("time",data.getTime());
                     wt.put("datatype",data.getDatatype());
                     dataList.add(wt);

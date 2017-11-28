@@ -106,6 +106,8 @@ public class WTBuf {
                 break;
             case 5:// 删除数据成功
                 Log.d(TAG, "---------删除数据成功-----------");
+                Message msg2 = myHandler.obtainMessage(BluetoothService.STATE_BROKEN);
+                myHandler.sendMessage(msg2);
                 break;
         }
     }
