@@ -8,6 +8,7 @@ package com.ruiqi.mtm;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Base64;
 import android.util.Log;
 
 import com.contec.jar.pm10.DeviceCommand;
@@ -63,8 +64,10 @@ public class BpmBuf {
                     "室早三连发","室早四连发","室早RonT","心动过缓","心动过速","心律不齐",
                     "ST抬高","ST压低"};
     String Results="";
-
-    //达理
+    private String time;     //时间
+    private int bpm2;        //心率
+    private String results;  // 心电计---分析结果
+    private String datatype; //数据来源(datatype)
     private Handler myHandler;
     private Message msg;
     public Handler getMyHandler() {
@@ -122,20 +125,27 @@ public class BpmBuf {
                     String date = mPackManager.mDeviceData.mYear + "-" + mPackManager.mDeviceData.mMonth + "-" + mPackManager.mDeviceData.mDay
                             + " "
                             + mPackManager.mDeviceData.mHour + ":" + mPackManager.mDeviceData.mMin + ":" + mPackManager.mDeviceData.mSec;
-                    Message msg = myHandler.obtainMessage(BluetoothService.STATE_SEND);
-                    BloodData data = new BloodData();
-                    data.setTime(date);
-                    data.setBpm(mPackManager.mDeviceData.Plus);
-                    data.setResults(Results);
-                    data.setDatatype(Constants.ecgdeivce);
-                    msg.obj = data;
-                    myHandler.sendMessage(msg);
+                    time=date;
+                    bpm2=mPackManager.mDeviceData.Plus;
+                    results=Results;
+                    datatype=Constants.ecgdeivce;
                     pOutputStream.write(DeviceCommand.GET_DATA(_receCount - 1));  //获取波形图的数据
                     Log.e("发送命令：", "->获取第"+(_receCount-1)+"个波形图数据:  GET_DATA(_receCount - 1)");
                     break;
                 case (byte) 0xff:
                     Log.e(TAG, "-1:波形图数据接收成功"+0xff);
                     byte[] _CaseData = mPackManager.mDeviceData.CaseData;
+                    String str = Base64.encodeToString(_CaseData,Base64.DEFAULT); //编码
+                    //byte[] str2=Base64.decode(str,Base64.DEFAULT);  //解码
+                    Message msg = myHandler.obtainMessage(BluetoothService.STATE_SEND);
+                    BloodData data = new BloodData();
+                    data.setTime(time);
+                    data.setBpm2(bpm2);
+                    data.setResults(Results);
+                    data.setDatatype(Constants.ecgdeivce);
+                    data.setECG(str);
+                    msg.obj = data;
+                    myHandler.sendMessage(msg);
                     Log.e("","保存数据===saveAsString=======_CaseData"+_CaseData);
                     saveAsString(_CaseData);
                     if ((_receCount - 1) == mCount) {  //表示是最后一条数据了
@@ -148,10 +158,9 @@ public class BpmBuf {
                             // TODO Auto-generated catch block
                             e.printStackTrace();
                         }
-                        //bluetoothService.connectCancel();
                         pOutputStream.write(DeviceCommand.DELETE_DATA(0, 0));
                         Log.e(TAG, "发送命令->删除数据: DELETE_DATA(0, 0)");
-                        pOutputStream.write(DeviceCommand.CONFIRM); // 3.3 接收完血压数据
+                        pOutputStream.write(DeviceCommand.CONFIRM); // 3.3
                         //释放连接
                         Message msg2 = myHandler.obtainMessage(BluetoothService.STATE_BROKEN);
                         myHandler.sendMessage(msg2);

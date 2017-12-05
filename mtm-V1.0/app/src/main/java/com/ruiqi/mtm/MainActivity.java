@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements
     public static  String devicetype;
     public static  int deviceimg;
 
-    private static final int REQUEST_EXTERNAL_STORAGE = 1; //权限申请 达理
+    private static final int REQUEST_EXTERNAL_STORAGE = 1; //权限申请
     private static String[] PERMISSIONS_STORAGE = {
             "android.permission.READ_EXTERNAL_STORAGE",
              "android.permission.WRITE_EXTERNAL_STORAGE" };
@@ -129,7 +129,7 @@ public class MainActivity extends AppCompatActivity implements
         dataList=new ArrayList<HashMap<String, Object>>();
         params=this.getIntent().getExtras();
         init();
-        verifyStoragePermissions(this); //申请权限 达理
+        verifyStoragePermissions(this); //申请权限
 
     /*
         BloodData data = new BloodData();
@@ -360,12 +360,11 @@ public class MainActivity extends AppCompatActivity implements
                     break;
                 case BluetoothService.STATE_CONNECTED:
                     DialogThridUtils.closeDialog(mDialog);
-                    //Toast.makeText(context, "蓝牙连接成功", Toast.LENGTH_SHORT).show();
                     showTip("蓝牙连接成功!");
                     break;
                 case BluetoothService.STATE_SEND:
                     // 上传数据
-                    //bluetoothService.connectCancel();//达理  心电计是先发送数据然后获取波形图这里断开蓝牙连接就不能获取蓝牙数据了
+                    //bluetoothService.connectCancel();
                     BloodData data = (BloodData) msg.obj;
                     if (data != null) {
                         Log.v("sendata",data.toString());
@@ -375,17 +374,14 @@ public class MainActivity extends AppCompatActivity implements
                 case BluetoothService.STATE_READ_COMPLETE:
                     bluetoothService.connectCancel();
                     DialogThridUtils.closeDialog(mDialog);
-                    //Toast.makeText(context, "数据读取完成", Toast.LENGTH_SHORT).show();
                     showTip("数据读取完成!");
                     break;
                 case BluetoothService.STATE_NO_DATA:
                     DialogThridUtils.closeDialog(mDialog);
-                    //Toast.makeText(context, "无新的测量数据,请测量后点击上传!", Toast.LENGTH_SHORT).show();
                     showTip("设备无新数据,请测量后点击上传!");
                     break;
                 case BluetoothService.STATE_NO_DEVICE:
                     DialogThridUtils.closeDialog(mDialog);
-                    //Toast.makeText(context, "连接设备失败请稍后重试...", Toast.LENGTH_SHORT).show();
                     showTip("连接设备失败请稍后重试...");
                     break;
                 case BluetoothService.STATE_BROKEN:
@@ -461,7 +457,8 @@ public class MainActivity extends AppCompatActivity implements
                     jsonObject.put("sid", storeid);
                     jsonObject.put("time", data.getTime());
                     jsonObject.put("bpm_rusult", data.getResults());
-                    jsonObject.put("heartrate", data.getBpm());
+                    jsonObject.put("heartrate2", data.getBpm2());
+                    jsonObject.put("ECG", data.getECG());
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -473,7 +470,7 @@ public class MainActivity extends AppCompatActivity implements
                     lsvDevicesData.setAdapter(sim_adapter);
                     HashMap<String, Object> pm = new HashMap<String, Object>();
                     pm.put("results",data.getResults());
-                    pm.put("bpm",data.getBpm());
+                    pm.put("bpm",data.getBpm2());
                     pm.put("time",data.getTime());
                     pm.put("datatype",data.getDatatype());
                     dataList.add(pm);
@@ -624,7 +621,7 @@ public class MainActivity extends AppCompatActivity implements
            // }
         //});
     }
-    //权限申请 达理
+    //权限申请
     public static void verifyStoragePermissions(Activity activity) {
         // Check if we have write permission
         int permission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);

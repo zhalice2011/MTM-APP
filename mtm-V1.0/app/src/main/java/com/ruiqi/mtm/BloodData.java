@@ -12,8 +12,14 @@ public class BloodData {
     private int sys;
     // 收缩压（高压）
     private int dia;
-    // 心率 (bpm)
+    // 心率 (bpm)-血压计
     private int bpm;
+    // 心率 (bpm)-心电计
+    private int bpm2;
+    // 心电计---波形图
+    private String ECG;
+    // 心电计---分析结果
+    private String results;
     //血糖值
     private String bloodsugar;
     // 血氧 (bpm)
@@ -25,8 +31,7 @@ public class BloodData {
     //数据来源(datatype)
     private String datatype;
 
-    // 心电计---分析结果
-    private String results;
+
 
 
     public String getTime() {
@@ -94,6 +99,16 @@ public class BloodData {
     }
     public void setResults(String results) {
         this.results = results;
+    }
+    public void setBpm2(int bpm) {
+        this.bpm2 = bpm;
+    }
+    public int getBpm2() {
+        return bpm2;
+    }
+    public void setECG(String ECG) {this.ECG = ECG;}
+    public String getECG() {
+        return ECG;
     }
 
     //血糖
