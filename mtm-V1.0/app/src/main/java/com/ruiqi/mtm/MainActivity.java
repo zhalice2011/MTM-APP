@@ -1,58 +1,58 @@
 package com.ruiqi.mtm;
 
-import android.Manifest;
-import android.app.Activity;
-import android.content.pm.PackageManager;
-import android.support.v4.app.ActivityCompat;
+        import android.Manifest;
+        import android.app.Activity;
+        import android.content.pm.PackageManager;
+        import android.support.v4.app.ActivityCompat;
 
-import android.content.SharedPreferences;
-import android.view.Gravity;
-import android.view.ViewGroup;
-import android.content.Intent;
-import android.view.Menu;
-import android.view.MenuItem;
+        import android.content.SharedPreferences;
+        import android.view.Gravity;
+        import android.view.ViewGroup;
+        import android.content.Intent;
+        import android.view.Menu;
+        import android.view.MenuItem;
 
-import android.app.Dialog;
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.os.Handler;
-import android.os.Message;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.SimpleAdapter;
-import android.widget.TextView;
-import android.widget.Toast;
+        import android.app.Dialog;
+        import android.bluetooth.BluetoothAdapter;
+        import android.bluetooth.BluetoothDevice;
+        import android.content.BroadcastReceiver;
+        import android.content.Context;
+        import android.os.Handler;
+        import android.os.Message;
+        import android.support.v7.app.AppCompatActivity;
+        import android.os.Bundle;
+        import android.util.Log;
+        import android.view.View;
+        import android.widget.AdapterView;
+        import android.widget.Button;
+        import android.widget.ImageView;
+        import android.widget.LinearLayout;
+        import android.widget.ListView;
+        import android.widget.SimpleAdapter;
+        import android.widget.TextView;
+        import android.widget.Toast;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-import java.lang.String;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+        import org.json.JSONException;
+        import org.json.JSONObject;
+        import java.lang.String;
+        import java.io.IOException;
+        import java.util.ArrayList;
+        import java.util.HashMap;
+        import java.util.List;
+        import java.util.Map;
+        import java.util.Set;
 
-import android.view.KeyEvent;
+        import android.view.KeyEvent;
 
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
+        import okhttp3.Call;
+        import okhttp3.Callback;
+        import okhttp3.MediaType;
+        import okhttp3.OkHttpClient;
+        import okhttp3.Request;
+        import okhttp3.RequestBody;
+        import okhttp3.Response;
 public class MainActivity extends AppCompatActivity implements
-       ICallBack {
+        ICallBack {
     private BluetoothAdapter bluetoothAdapter;
     private Toast tipToast;
     private Context context;
@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity implements
     private static final int REQUEST_EXTERNAL_STORAGE = 1; //权限申请
     private static String[] PERMISSIONS_STORAGE = {
             "android.permission.READ_EXTERNAL_STORAGE",
-             "android.permission.WRITE_EXTERNAL_STORAGE" };
+            "android.permission.WRITE_EXTERNAL_STORAGE" };
     //退出
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event){
@@ -441,6 +441,7 @@ public class MainActivity extends AppCompatActivity implements
                             new String[]{"pic", "sys", "dia", "bpm", "time","datatype"},
                             new int[]{R.id.pic, R.id.sys, R.id.dia, R.id.bpm, R.id.times,R.id.datatype});
                     lsvDevicesData.setAdapter(sim_adapter);
+                    lsvDevicesData.setSelection(0);
                     HashMap<String, Object> blood = new HashMap<String, Object>();
                     blood.put("pic", R.drawable.blood);//图片
                     blood.put("sys", data.getSys());
@@ -448,7 +449,7 @@ public class MainActivity extends AppCompatActivity implements
                     blood.put("bpm", data.getBpm());
                     blood.put("time",data.getTime());
                     blood.put("datatype",data.getDatatype());
-                    dataList.add(blood);
+                    dataList.add(0,blood);
                 }
                 break;
             case Constants.ecgdeivce :// 智能心电计:PM
@@ -468,12 +469,13 @@ public class MainActivity extends AppCompatActivity implements
                             new String[]{ "results", "bpm", "time","datatye"},
                             new int[]{ R.id.results, R.id.bpm, R.id.times,R.id.datatype});
                     lsvDevicesData.setAdapter(sim_adapter);
+                    lsvDevicesData.setSelection(0);
                     HashMap<String, Object> pm = new HashMap<String, Object>();
                     pm.put("results",data.getResults());
                     pm.put("bpm",data.getBpm2());
                     pm.put("time",data.getTime());
                     pm.put("datatype",data.getDatatype());
-                    dataList.add(pm);
+                    dataList.add(0,pm);
                 }
                 break;
             case Constants.glucometer ://血糖仪:BG01
@@ -489,17 +491,19 @@ public class MainActivity extends AppCompatActivity implements
                 if(put){ //点击上传还是渲染数据
                     sim_adapter = new mySimpleAdapter(this, dataList, R.layout.bloodsugardata,
                             new String[]{"bloodsugar","time","datatype"},
-                           new int[]{R.id.bloodsugar,R.id.times,R.id.datatype});
+                            new int[]{R.id.bloodsugar,R.id.times,R.id.datatype});
                     lsvDevicesData.setAdapter(sim_adapter);
+                    lsvDevicesData.setSelection(0);
                     HashMap<String, Object> blsugar = new HashMap<String, Object>();
                     blsugar.put("bloodsugar",data.getBloodSugar());
                     blsugar.put("time",data.getTime());
                     blsugar.put("datatype",data.getDatatype());
-                    dataList.add(blsugar);
+                    dataList.add(0,blsugar);
                 }
                 break;
             case Constants.pulsedeice :// 血氧
                 //生成json数据
+                Log.v("updata","生成json数据");
                 try {
                     jsonObject.put("sid", storeid);
                     jsonObject.put("time", data.getTime());
@@ -514,12 +518,13 @@ public class MainActivity extends AppCompatActivity implements
                             new String[]{"spo","pr","time","datatype"},
                             new int[]{R.id.spo,R.id.pr,R.id.times,R.id.datatype});
                     lsvDevicesData.setAdapter(sim_adapter);
+                    lsvDevicesData.setSelection(0);
                     HashMap<String, Object> spo = new HashMap<String, Object>();
                     spo.put("spo",data.getSpo());
                     spo.put("pr",data.getPr());
                     spo.put("time",data.getTime());
                     spo.put("datatype",data.getDatatype());
-                    dataList.add(spo);
+                    dataList.add(0,spo);
                 }
                 break;
             case Constants.weightscale :// 体重计
@@ -537,15 +542,17 @@ public class MainActivity extends AppCompatActivity implements
                             new String[]{"weight","time","datatype"},
                             new int[]{R.id.weight,R.id.times,R.id.datatype});
                     lsvDevicesData.setAdapter(sim_adapter);
+                    lsvDevicesData.setSelection(0);
                     HashMap<String, Object> wt = new HashMap<String, Object>();
                     wt.put("weight",data.getWt());
                     wt.put("time",data.getTime());
                     wt.put("datatype",data.getDatatype());
-                    dataList.add(wt);
+                    dataList.add(0,wt);
                 }
                 break;
         }
         String json = jsonObject.toString();
+        Log.v("updata",json);
         // 向服务器上传数据json格式
         Request request = new Request.Builder()
                 .url(serverURL)
@@ -573,10 +580,10 @@ public class MainActivity extends AppCompatActivity implements
                                     JSONObject jo = new JSONObject(resp);
                                     int code = jo.getJSONObject("error").getInt("code");
                                     if (code == 0) {
-                                       // poastToast("上传成功");
+                                        // poastToast("上传成功");
                                         showTip("上传成功");
                                     } else {
-                                       // poastToast("上传失败");
+                                        // poastToast("上传失败");
                                         showTip("上传失败");
                                     }
                                 } catch (Exception e) {
@@ -604,21 +611,21 @@ public class MainActivity extends AppCompatActivity implements
     }
     //提示框2--big
     private void showTip(String str) {
-       // runOnUiThread(new Runnable() {
-         //   @Override
-          //  public void run() {
-                if (tipToast == null) {
-                    tipToast = Toast.makeText(getApplicationContext(), "",
-                            Toast.LENGTH_LONG);
-                    LinearLayout layout = (LinearLayout) tipToast.getView();
-                    TextView tv = (TextView) layout.getChildAt(0);
-                    tv.setTextSize(16);
-                }
-                //mToast.cancel();
-                tipToast.setGravity(Gravity.CENTER, 0, 0);
-                tipToast.setText(str);
-                tipToast.show();
-           // }
+        // runOnUiThread(new Runnable() {
+        //   @Override
+        //  public void run() {
+        if (tipToast == null) {
+            tipToast = Toast.makeText(getApplicationContext(), "",
+                    Toast.LENGTH_LONG);
+            LinearLayout layout = (LinearLayout) tipToast.getView();
+            TextView tv = (TextView) layout.getChildAt(0);
+            tv.setTextSize(16);
+        }
+        //mToast.cancel();
+        tipToast.setGravity(Gravity.CENTER, 0, 0);
+        tipToast.setText(str);
+        tipToast.show();
+        // }
         //});
     }
     //权限申请
@@ -723,6 +730,32 @@ public class MainActivity extends AppCompatActivity implements
                 BloodData data = new BloodData();
                 data.setTime(time);
                 data.setBloodSugar(bloodsugar);
+                data.setDatatype(datatype);
+                sendData(data, false);
+                break;
+            }
+            case Constants.pulsedeice: {
+                Log.v("device", "血氧仪" + updata.toString());
+                int spo2 = Integer.parseInt(updata.get("spo").toString());
+                int pr = Integer.parseInt(updata.get("pr").toString());
+                String datatype = updata.get("datatype").toString();
+                String time = updata.get("time").toString();
+                BloodData data = new BloodData();
+                data.setTime(time);
+                data.setSpo(spo2);
+                data.setPr(pr);
+                data.setDatatype(datatype);
+                sendData(data, false);
+                break;
+            }
+            case Constants.weightscale: {
+                Log.v("device", "体重秤" + updata.toString());
+                String weight = updata.get("weight").toString();
+                String time = updata.get("time").toString();
+                String datatype = updata.get("datatype").toString();
+                BloodData data = new BloodData();
+                data.setTime(time);
+                data.setWt(weight);
                 data.setDatatype(datatype);
                 sendData(data, false);
                 break;
