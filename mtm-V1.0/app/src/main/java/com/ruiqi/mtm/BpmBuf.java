@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Vector;
 
 public class BpmBuf {
@@ -137,6 +138,26 @@ public class BpmBuf {
                     byte[] _CaseData = mPackManager.mDeviceData.CaseData;
                     String str = Base64.encodeToString(_CaseData,Base64.DEFAULT); //编码
                     //byte[] str2=Base64.decode(str,Base64.DEFAULT);  //解码
+                    ArrayList<String> list = new ArrayList();
+                    ArrayList<String>   list2 = new ArrayList();
+                    for (int i = 0; i < _CaseData.length; i+=2) {
+                        //这是宏宇老师的算法
+                        int x = _CaseData[i] & 0xFF;
+                        int y =(x << 8) | (_CaseData[i+1] & 0xFF);
+                        //这是苑一峰的算法
+                        int z = _CaseData[i]<<8 | _CaseData[i+1];
+                        list.add(Integer.toString(x));
+                        list2.add(Integer.toString(z));
+                    }
+                    // 转化成字符串
+                    StringBuilder sb = new StringBuilder();
+                    sb.append("[");
+                    for (String s : list)
+                    {
+                        sb.append(s);
+                        sb.append(",");
+                    }
+                    sb.append("]");
                     Message msg = myHandler.obtainMessage(BluetoothService.STATE_SEND);
                     BloodData data = new BloodData();
                     data.setTime(time);
@@ -144,6 +165,7 @@ public class BpmBuf {
                     data.setResults(Results);
                     data.setDatatype(Constants.ecgdeivce);
                     data.setECG(str);
+                    data.setECGdata(sb.toString());
                     msg.obj = data;
                     myHandler.sendMessage(msg);
                     Log.e("","保存数据===saveAsString=======_CaseData"+_CaseData);

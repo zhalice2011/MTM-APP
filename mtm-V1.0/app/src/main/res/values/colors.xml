@@ -10,4 +10,9 @@
     <color name="colorPrimary">#02df82</color>
     <color name="colorPrimaryDark">#00caca</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="limegreen">#32cd32</color><!--橙绿色 -->
+    <color name="greenlucency">#3f00ff00</color><!--25%透明的绿色 -->
+    <color name="red">#ff0000</color><!--红色 -->
+    <color name="trans">#00000000</color><!--透明 -->
+    <color name="black">#000000</color><!--黑色 -->
 </resources>

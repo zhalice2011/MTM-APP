@@ -16,8 +16,10 @@ public class BloodData {
     private int bpm;
     // 心率 (bpm)-心电计
     private int bpm2;
-    // 心电计---波形图
+    // 心电计---波形图  //-给交互桌
     private String ECG;
+    // 心电计---波形图数据 //-给前端
+    private String ECGdata;
     // 心电计---分析结果
     private String results;
     //血糖值
@@ -110,7 +112,10 @@ public class BloodData {
     public String getECG() {
         return ECG;
     }
-
+    public void setECGdata(String ECGdata) {this.ECGdata = ECGdata;}
+    public String getECGdata() {
+        return ECGdata;
+    }
     //血糖
     public void setBloodSugar(String bloodsugar){
         this.bloodsugar=bloodsugar;

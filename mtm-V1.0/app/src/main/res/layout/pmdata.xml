@@ -119,8 +119,7 @@
         android:layout_height="wrap_content"
         android:visibility="gone"
         android:text="TextView"
-        tools:layout_editor_absoluteY="53dp"
-        tools:layout_editor_absoluteX="236dp" />
+    />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -147,6 +146,27 @@
             android:gravity="center"
             android:text="重新\n上传"
             android:textColor="#f46c9a" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        android:id="@+id/lookecgwrap"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintLeft_toRightOf="@+id/linearLayout3"
+        android:layout_marginLeft="0dp"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/lookecg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="心电图"
+            android:textColor="#48cda6" />
     </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>
