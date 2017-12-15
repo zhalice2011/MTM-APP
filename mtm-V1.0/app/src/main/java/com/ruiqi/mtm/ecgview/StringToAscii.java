@@ -4,10 +4,6 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
- * Created by wenh on 16/10/2114:01.
- */
-
 public class StringToAscii {
     private static String toHexUtil(int n){
         String rt="";

@@ -1,7 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="62dp"
+        android:orientation="horizontal"
+        android:background="@drawable/border_radio">
+
+        <TextView
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginLeft="5dp"
+            android:textSize="16sp"
+            android:textColor="#f46c9a"
+            android:layout_gravity="center"
+            android:text="走速:\n25.0mm/s"
+            android:gravity="center"/>
+        <TextView
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginLeft="5dp"
+            android:textSize="16sp"
+            android:textColor="#f46c9a"
+            android:layout_gravity="center"
+            android:text="增益:\n10mm/mV"
+            android:gravity="center"/>
+        <TextView
+            android:id="@+id/ecgviewbpm"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginLeft="5dp"
+            android:textSize="16sp"
+            android:textColor="#f46c9a"
+            android:layout_gravity="center"
+            android:text="心率:\n100bpm"
+            android:gravity="center"/>
+        <TextView
+            android:id="@+id/ecgviewresult"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginLeft="5dp"
+            android:textSize="10sp"
+            android:textColor="#f46c9a"
+            android:layout_gravity="center"
+            android:text="解读:\n偶发室早\n心动过速"
+            android:gravity="center"/>
+
+    </LinearLayout>
+
     <com.ruiqi.mtm.ecgview.WH_ECGView
         android:id="@+id/ecg_data_ecgView"
         android:layout_width="match_parent"

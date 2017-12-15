@@ -11,9 +11,6 @@ import com.ruiqi.mtm.R;
 
 import java.util.ArrayList;
 
-/**
- * Created by wenh on 16/10/2617:04.
- */
 
 public class ECG_allData_View extends View {
 

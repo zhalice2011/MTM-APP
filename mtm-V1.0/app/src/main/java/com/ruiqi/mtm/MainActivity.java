@@ -477,6 +477,7 @@ public class MainActivity extends AppCompatActivity implements
                     pm.put("bpm",data.getBpm2());
                     pm.put("time",data.getTime());
                     pm.put("ECGdata",data.getECGdata());
+                    pm.put("ECG",data.getECG());
                     pm.put("datatype",data.getDatatype());
                     dataList.add(0,pm);
                 }
@@ -711,10 +712,14 @@ public class MainActivity extends AppCompatActivity implements
                 String results = updata.get("results").toString();
                 String datatype = updata.get("datatype").toString();
                 String time = updata.get("time").toString();
+                String ecg = updata.get("ECG").toString();
+                String ecgdata = updata.get("ECGdata").toString();
                 BloodData data = new BloodData();
                 data.setTime(time);
-                data.setBpm(xl);
+                data.setBpm2(xl);
                 data.setResults(results);
+                data.setECG(ecg);
+                data.setECGdata(ecgdata);
                 data.setDatatype(datatype);
                 sendData(data, false);
                 break;
@@ -778,11 +783,13 @@ public class MainActivity extends AppCompatActivity implements
     public void  lookEcg(HashMap<String,Object> updata){
         Log.e("event","查看心电图："+updata.get("datatype").toString());
         String ECGdata = updata.get("ECGdata").toString();
+        String bpm = updata.get("bpm").toString();
+        String results = updata.get("results").toString();
         Intent intent = new Intent(MainActivity.this, EcgView.class);
         Bundle bundle = new Bundle();
-        //bundle.putString("Name","[2071, 2086, 2099, 2109, 2117, 2124, 2130, 2134, 2136, 2138, 2139, 2141, 2143, 2145, 2147, 2148, 2148, 2148, 2147, 2145, 2141, 2134, 2125, 2116, 2107, 2098, 2088, 2078, 2067, 2058, 2049, 1997, 1991, 1991, 1997, 2058, 2168, 2221, 2221, 2144, 2003, 1937, 1937, 1954, 1970, 1972, 1972, 1972, 1984, 2005, 2019, 2020, 2020, 2019, 2019, 2021, 2025, 2028, 2032, 2036, 2041, 2048, 2057, 2066, 2074, 2081, 2089, 2097, 2105, 2113, 2122, 2132, 2143, 2154, 2164, 2174, 2184, 2190, 2190, 2181, 2166, 2146, 2125, 2103, 2082, 2062, 2046, 2036, 2030, 2027, 2025, 2024, 2022, 2019, 2017, 2014, 2012, 2012, 2014, 2016, 2019, 2021, 2026, 2031, 2037, 2041, 2044, 2045, 2047, 2048, 2048, 2047, 2046, 2044, 2043, 2041, 2040, 2039, 2038, 2037, 2037, 2037, 2038, 2039, 2041, 2042, 2043, 2044, 2046, 2047, 2048, 2048, 2047, 2047, 2047, 2047, 2047, 2048, 2050, 2052, 2055, 2058, 2060, 2062, 2062, 2059, 2056, 2052, 2049, 2046, 2044, 2041, 2042, 2044, 2046, 2047, 2034, 2023, 2023, 2045, 2128, 2231, 2273, 2273, 2206, 2092, 2045, 2045, 2046, 2051, 2051, 2051,]");
-        bundle.putBoolean("Ismale", true);
-        bundle.putString("Name",ECGdata);
+        bundle.putString("ECGdata",ECGdata);
+        bundle.putString("bpm",bpm);
+        bundle.putString("results",results);
         intent.putExtras(bundle);
         startActivity(intent);
     }

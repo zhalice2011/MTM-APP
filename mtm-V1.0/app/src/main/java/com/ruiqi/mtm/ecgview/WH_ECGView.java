@@ -14,10 +14,8 @@ import android.view.View;
 import com.ruiqi.mtm.R;
 
 import java.util.ArrayList;
-
-/**
- * Created by wenh on 16/10/2511:09.
- */
+import java.util.Collections;
+import java.util.List;
 
 public class WH_ECGView extends View {
 
@@ -26,9 +24,17 @@ public class WH_ECGView extends View {
     private int xori;//原点x坐标
     private int grid_hori,grid_ver;//横、纵线条数
     private float gap_x;//两点间横坐标间距
-    private int dataNum_per_grid = 18;//每小格内的数据个数
+    private int dataNum_per_grid = 25;//每小格内的数据个数
     private float y_center;//中心y值
     private ArrayList<String> data_source;
+    private float max; //最大值
+    private float min; //最大值
+    private float M; //图表最大值
+    private float N; //图表最小值
+    private float X; //图表最大值
+    private float Y; //图表最小值
+
+
 
     private float x_change ;//滑动查看时，x坐标的变化
     private static float x_changed ;
@@ -200,12 +206,8 @@ public class WH_ECGView extends View {
      */
     private float getY_coordinate(String data){
         int y_int = Integer.parseInt(data);
-        y_int = (y_int - 2048) *(-1);
         float y_coor = 0.0f;
-
-        float y_coor2 = y_int *3/4 + y_center;
-        //y_coor = y_int/8 + y_center;
-        y_coor = y_int *3/4 + y_center;
+        y_coor = y_int * X + Y;
         return y_coor;
     }
 
@@ -214,6 +216,17 @@ public class WH_ECGView extends View {
      */
     public void setData(ArrayList<String> data){
         this.data_source = data;
+        List<Integer> nums = new ArrayList<Integer>();
+        for(String a:data_source){
+            nums.add(Integer.parseInt(a));
+        }
+        //设置最大值Max
+        M = 660;
+        N = 60;
+        max = Collections.max(nums);
+        min = Collections.min(nums);
+        X=(M-N)/(max-min);
+        Y=N-min*X;
         invalidate();
     }
 

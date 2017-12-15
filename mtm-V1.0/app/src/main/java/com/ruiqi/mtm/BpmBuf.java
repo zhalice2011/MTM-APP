@@ -141,13 +141,8 @@ public class BpmBuf {
                     ArrayList<String> list = new ArrayList();
                     ArrayList<String>   list2 = new ArrayList();
                     for (int i = 0; i < _CaseData.length; i+=2) {
-                        //这是宏宇老师的算法
-                        int x = _CaseData[i] & 0xFF;
-                        int y =(x << 8) | (_CaseData[i+1] & 0xFF);
-                        //这是苑一峰的算法
-                        int z = _CaseData[i]<<8 | _CaseData[i+1];
-                        list.add(Integer.toString(x));
-                        list2.add(Integer.toString(z));
+                        int a = _CaseData[i]  +  _CaseData[i+1]* 256;
+                        list.add(Integer.toString(a));
                     }
                     // 转化成字符串
                     StringBuilder sb = new StringBuilder();
