@@ -11,9 +11,9 @@ public class Constants {
     public static final String bg0 = "血糖仪";
     public static final String WT = "电子体重秤";
 
-    public static final String blooddeivce = "NIBP03";
+    public static final String blooddeivce = "NIBP";
     public static final String ecgdeivce = "PM";//PM
     public static final String pulsedeice = "SpO";
-    public static final String glucometer= "BG01";
+    public static final String glucometer= "BG";
     public static final String weightscale= "WT";
 }
